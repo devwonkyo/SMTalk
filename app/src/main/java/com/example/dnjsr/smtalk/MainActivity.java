@@ -86,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.parseColor("#2f2f30"));
         }
 
-        Bundle bundle = getIntent().getExtras();
-        UserInfo userinfo = bundle.getParcelable("userinfo");
+       /* Bundle bundle = getIntent().getExtras();
+        UserInfo userinfo = bundle.getParcelable("userinfo");*/
 
 
         /*Intent intent = getIntent();

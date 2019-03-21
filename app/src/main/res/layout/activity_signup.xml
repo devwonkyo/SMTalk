@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#fff178"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,7 +10,7 @@
     tools:context=".SignupActivity">
 
     <ImageView
-        android:src="@drawable/loading_icons"
+        android:src="@drawable/loading_icon"
         android:id="@+id/signupActivity_imageview_profile"
         android:layout_width="100dp"
         android:layout_height="100dp"
@@ -66,7 +67,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <Button
-
+        android:background="@drawable/button_background"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:text="sign up"

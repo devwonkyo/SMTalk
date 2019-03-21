@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
     <FrameLayout
+        android:background="#fff178"
         android:id="@+id/mainactivity_framelayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"

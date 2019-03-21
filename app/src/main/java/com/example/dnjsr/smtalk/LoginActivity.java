@@ -49,8 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
-        login.setBackgroundColor(Color.parseColor("#2f2f30"));
-        signup.setBackgroundColor(Color.parseColor("#2f2f30"));
+
 
 
         login.setOnClickListener(new View.OnClickListener() {
