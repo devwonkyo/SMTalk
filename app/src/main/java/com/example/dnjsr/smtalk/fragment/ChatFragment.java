@@ -20,36 +20,44 @@ import com.example.dnjsr.smtalk.R;
 import com.example.dnjsr.smtalk.info.RoomInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.Inflater;
 
 public class ChatFragment extends android.support.v4.app.Fragment {
     private ChatFragmentRecyclerViewAdapter chatFragmentRecyclerViewAdapter;
     private RecyclerView fragment_chat_recyclerview;
-  /*  Bundle recive_bundle = getArguments();
-    RoomInfo roominfo = recive_bundle.getParcelable("roominfo");
-*/
+
+    List<RoomInfo> roomAdapterList = new ArrayList<>();
+
+    public List<RoomInfo> getRoomAdapterList() {
+        return roomAdapterList;
+    }
+
+    public void setRoomAdapterList(List<RoomInfo> roomAdapterList) {
+        this.roomAdapterList = roomAdapterList;
+    }
+
+    /*  Bundle recive_bundle = getArguments();
+        RoomInfo roominfo = recive_bundle.getParcelable("roominfo");
+    */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat,container,false);
-        Log.d("fragmentId",this.toString());
         fragment_chat_recyclerview = view.findViewById(R.id.chatfragment_recyclerview);
         fragment_chat_recyclerview.setLayoutManager(new LinearLayoutManager(inflater.getContext()));
         chatFragmentRecyclerViewAdapter = new ChatFragmentRecyclerViewAdapter();
         fragment_chat_recyclerview.setAdapter(chatFragmentRecyclerViewAdapter);
+
         return view;
     }
 
 
     class ChatFragmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-        ArrayList<RoomInfo> roomAdapterList;
+
         public ChatFragmentRecyclerViewAdapter() {
-            roomAdapterList = new ArrayList<>();
-            roomAdapterList.add(new RoomInfo("프젝","3"));
-            roomAdapterList.add(new RoomInfo("1학년과톡","15"));
-            roomAdapterList.add(new RoomInfo("ㅂㄹㅊㄱ","6"));
-            //roomAdapterList.add(roominfo);
+
         }
 
         @NonNull

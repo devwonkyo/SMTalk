@@ -5,8 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
     <FrameLayout
-        android:background="#fff178"
+        android:background="@color/colorYellow"
         android:id="@+id/mainactivity_framelayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
@@ -20,8 +21,8 @@
 
 
     <android.support.design.widget.BottomNavigationView
-        app:itemIconTint="@android:color/white"
-        app:itemTextColor="@android:color/white"
+        app:itemIconTint="@color/colorYellow"
+        app:itemTextColor="@color/colorYellow"
         app:itemBackground="@color/colorBackground"
         android:layout_alignParentBottom="true"
         app:menu="@menu/bottom_navigation_view"

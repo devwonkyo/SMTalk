@@ -26,10 +26,19 @@ import java.util.List;
 public class PeopleFragment extends Fragment {
 
     List<UserInfo> userInfos = new ArrayList<>();
+
+    public List<UserInfo> getUserInfos() {
+        return userInfos;
+    }
+
+    public void setUserInfos(List<UserInfo> userInfos) {
+        this.userInfos = userInfos;
+    }
+
     private EditText peoplefragment_edittext_search;
     private ImageView peoplefragment_imageview_search;
     private TextView peoplefragment_textview_friendlist;
-    PeopleFragmentRecyclerViewAdapter peopleFragmentRecyclerViewAdapter;
+    private PeopleFragmentRecyclerViewAdapter peopleFragmentRecyclerViewAdapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -38,6 +47,22 @@ public class PeopleFragment extends Fragment {
         peoplefragment_imageview_search = view.findViewById(R.id.peoplefragment_imageview_search);
         peoplefragment_edittext_search = view.findViewById(R.id.peoplefragment_edittext_search);
         peoplefragment_textview_friendlist = view.findViewById(R.id.peoplefragment_textview_friendlist);
+
+       // userInfos = new ArrayList<>();                               //친구목록 data input
+
+        /*userInfos.add(new UserInfo("ww","wonkyo","wonkyo","","오늘 코딩 ㄴ","hi"));
+        userInfos.add(new UserInfo("ww","wonkyo","dong","","오늘 코딩 ㄴ","hi"));
+        userInfos.add(new UserInfo("ww","wonkyo","gun","","오늘 코딩 ㄴ","hi"));
+        userInfos.add(new UserInfo("ww","wonkyo","wkyo","","오늘 코딩 ㄴ","hi"));
+        userInfos.add(new UserInfo("ww","wonkyo","hyo","","오늘 코딩 ㄴ","hi"));
+        userInfos.add(new UserInfo("ww","wonkyo","ggggyo","","오늘 코딩 ㄴ","hi"));
+        userInfos.add(new UserInfo("ww","wonkyo","woleho","","오늘 코딩 ㄴ","hi"));
+        userInfos.add(new UserInfo("ww","wonkyo","wttyo","","오늘 코딩 ㄴ","hi"));
+        userInfos.add(new UserInfo("ww","wonkyo","이동o","","오늘 코딩 ㄴ","hi"));
+        userInfos.add(new UserInfo("ww","wonkyo","w원교yo","","오늘 코딩 ㄴ","hi"));
+        userInfos.add(new UserInfo("ww","wonkyo","wo효근o","","오늘 코딩 ㄴ","hi"));*/
+
+
 
         peoplefragment_edittext_search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -81,23 +106,13 @@ public class PeopleFragment extends Fragment {
 
     class PeopleFragmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-        ArrayList<UserInfo> adapterList = new ArrayList<UserInfo>();
+        ArrayList<UserInfo> adapterList;
 
         public PeopleFragmentRecyclerViewAdapter() {
 
-            userInfos.add(new UserInfo("ww","wonkyo","wonkyo","","오늘 코딩 ㄴ","hi"));
-            userInfos.add(new UserInfo("ww","wonkyo","wonkyo","","오늘 코딩 ㄴ","hi"));
-            userInfos.add(new UserInfo("ww","wonkyo","wonkyo","","오늘 코딩 ㄴ","hi"));
-            userInfos.add(new UserInfo("ww","wonkyo","wonkyo","","오늘 코딩 ㄴ","hi"));
-            userInfos.add(new UserInfo("ww","wonkyo","wonkyo","","오늘 코딩 ㄴ","hi"));
-            userInfos.add(new UserInfo("ww","wonkyo","wonkyo","","오늘 코딩 ㄴ","hi"));
-            userInfos.add(new UserInfo("ww","wonkyo","wonkyo","","오늘 코딩 ㄴ","hi"));
-            userInfos.add(new UserInfo("ww","wonkyo","wonkyo","","오늘 코딩 ㄴ","hi"));
-            userInfos.add(new UserInfo("ww","wonkyo","wonkyo","","오늘 코딩 ㄴ","hi"));
-            userInfos.add(new UserInfo("ww","wonkyo","wonkyo","","오늘 코딩 ㄴ","hi"));
-            userInfos.add(new UserInfo("ww","wonkyo","wonkyo","","오늘 코딩 ㄴ","hi"));
+            adapterList = new ArrayList<UserInfo>();                                    //filtering된 친구목록
 
-            for(UserInfo userInfo : userInfos){
+           for(UserInfo userInfo : userInfos){
                 adapterList.add(userInfo);
             }
             peoplefragment_textview_friendlist.setText("친구 "+ adapterList.size());
