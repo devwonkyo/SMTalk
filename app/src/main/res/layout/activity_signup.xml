@@ -12,8 +12,8 @@
     <ImageView
         android:src="@drawable/loading_icon"
         android:id="@+id/signupActivity_imageview_profile"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_margin="60dp"/>
 
     <android.support.design.widget.TextInputLayout
@@ -22,11 +22,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
+            android:textSize="15dp"
             android:hint="ID"
             android:id="@+id/signupActivity_edittext_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.design.widget.FloatingActionButton
+            app:fabSize="mini"
+            app:elevation="0dp"
+            android:gravity="center"
+            android:src="@drawable/ic_icon_check"
+            android:id="@+id/signupActivity_button_idcheckbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/signupActivity_textview_idcheckmessage"
+            android:layout_marginLeft="30dp"
+            android:layout_gravity="center"
+            android:text="아이디 중복을 확인해주세요."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
 
     <android.support.design.widget.TextInputLayout
         android:layout_marginStart="20dp"
@@ -34,6 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
+            android:textSize="15dp"
             android:hint="NAME"
             android:id="@+id/signupActivity_edittext_name"
             android:layout_width="match_parent"
@@ -46,6 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
+            android:textSize="15dp"
             android:hint="PASSWORD"
             android:inputType="textPassword"
             android:id="@+id/signupActivity_edittext_password"
@@ -59,6 +88,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
+            android:textSize="15dp"
             android:hint="PASSWORD(CHECK)"
             android:inputType="textPassword"
             android:id="@+id/signupActivity_edittext_passwordcheck"
@@ -70,6 +100,7 @@
         android:background="@drawable/button_background"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp"
         android:text="sign up"
         android:textColor="#ffffff"
         android:id="@+id/signupActivity_button_signup"
