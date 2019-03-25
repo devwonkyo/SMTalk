@@ -51,7 +51,7 @@ public class SignupActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.parseColor("#2f2f30"));
         }
-        final boolean[] check = {false};
+
         signup = findViewById(R.id.signupActivity_button_signup);
         id = findViewById(R.id.signupActivity_edittext_id);
         name = findViewById(R.id.signupActivity_edittext_name);

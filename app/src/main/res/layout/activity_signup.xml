@@ -38,7 +38,6 @@
         <android.support.design.widget.FloatingActionButton
             app:fabSize="mini"
             app:elevation="0dp"
-            android:gravity="center"
             android:src="@drawable/ic_icon_check"
             android:id="@+id/signupActivity_button_idcheckbutton"
             android:layout_width="wrap_content"

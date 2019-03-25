@@ -1,6 +1,7 @@
 package com.example.dnjsr.smtalk.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.dnjsr.smtalk.ChatRoomActivity;
 import com.example.dnjsr.smtalk.R;
 import com.example.dnjsr.smtalk.info.RoomInfo;
 
@@ -68,11 +70,18 @@ public class ChatFragment extends android.support.v4.app.Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
             ((CustomViewHolder)viewHolder).chatroomitem_imageview.setImageResource(R.drawable.icon_account);
             ((CustomViewHolder)viewHolder).chatroomitem_textview_chatroomname.setText(roomAdapterList.get(i).getRoomName());
             ((CustomViewHolder)viewHolder).chatroomitem_textviewoomnumber.setText(roomAdapterList.get(i).getMemberNumber());
-
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(),ChatRoomActivity.class);
+                    intent.putExtra("roominfo",roomAdapterList.get(i));
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override

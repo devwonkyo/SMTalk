@@ -24,20 +24,20 @@
             android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:theme="@style/AppThemeNoActionBar"
             android:name=".SignupActivity"
             android:parentActivityName=".LoginActivity"
+            android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:label="@string/friend"
             android:name=".MainActivity"
-            />
+            android:label="@string/friend" />
         <activity
-            android:theme="@style/AppThemeNoActionBar"
-            android:name=".ProfileActivity" />
+            android:name=".ProfileActivity"
+            android:theme="@style/AppThemeNoActionBar" />
         <activity
-            android:theme="@style/AppThemeNoActionBar"
-            android:name=".ProfilepictureActivity"></activity>
+            android:name=".ProfilepictureActivity"
+            android:theme="@style/AppThemeNoActionBar" />
+        <activity android:name=".ChatRoomActivity"></activity>
     </application>
 
 </manifest>
