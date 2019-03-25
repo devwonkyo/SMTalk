@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppThemeActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -6,6 +6,8 @@
         <item name="colorPrimaryDark">@color/colorBackground</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionBarStyle">@style/MyActionBar</item>
+
+
     </style>
 
     <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
@@ -14,6 +16,7 @@
 
     <style name="MyTitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/colorYellow</item>
+        <item name="android:fontFamily" tools:ignore="NewApi">@font/baeminfont</item>
     </style>
 
 
@@ -28,11 +31,5 @@
         parent="Widget.Design.BottomNavigationView">
         <item name="fontFamily">@font/baeminfont</item>
     </style>
-
-
-
-
-
-
-
+    
 </resources>
