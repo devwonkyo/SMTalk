@@ -20,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
+            android:fontFamily="@font/baeminfont"
             android:id="@+id/loginactivity_edittext_id"
             android:hint="ID"
             android:layout_width="match_parent"
@@ -42,6 +43,7 @@
     <Button
         android:id="@+id/loginactivity_button_login"
         android:background="@drawable/button_background"
+        android:fontFamily="@font/baeminfont"
         android:text="Login"
         android:textColor="#ffffff"
         android:layout_marginStart="20dp"
@@ -50,6 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <Button
+        android:fontFamily="@font/baeminfont"
         android:background="@drawable/button_background"
         android:id="@+id/loginactivity_button_signup"
         android:text="Signup"

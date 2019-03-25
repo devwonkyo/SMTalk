@@ -16,6 +16,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     static String membercount;
     List<UserInfo> userInfos;
     List<RoomInfo> roomInfos;
+
 
 
 
@@ -93,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         userInfos = new ArrayList<>();
         roomInfos = new ArrayList<>();
 

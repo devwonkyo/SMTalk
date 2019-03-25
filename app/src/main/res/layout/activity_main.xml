@@ -21,6 +21,7 @@
 
 
     <android.support.design.widget.BottomNavigationView
+        android:theme="@style/Widget.BottomNavigationView"
         app:itemIconTint="@color/colorYellow"
         app:itemTextColor="@color/colorYellow"
         app:itemBackground="@color/colorBackground"

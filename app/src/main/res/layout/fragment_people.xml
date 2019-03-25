@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
+            android:fontFamily="@font/baeminfont"
             android:defaultFocusHighlightEnabled="false"
             android:hint="search friend"
             android:layout_weight="8"
@@ -31,6 +32,7 @@
 
     </LinearLayout>
     <TextView
+        android:fontFamily="@font/baeminfont"
         android:id="@+id/peoplefragment_textview_friendlist"
         android:layout_marginLeft="10dp"
         android:textColor="#bdbdbd"

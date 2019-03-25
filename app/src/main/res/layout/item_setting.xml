@@ -13,6 +13,7 @@
         android:layout_height="30dp" />
 
     <TextView
+        android:fontFamily="@font/baeminfont"
         android:textSize="13dp"
         android:layout_marginLeft="15dp"
         android:layout_gravity="center"
