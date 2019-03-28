@@ -1,5 +1,6 @@
 package com.example.dnjsr.smtalk;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -20,12 +21,12 @@ public class ProfilepictureActivity extends AppCompatActivity {
         }
 
         Bundle bundle = getIntent().getExtras();
-        String userimageurl = bundle.getParcelable("userimageurl");
+        Bitmap userimage = bundle.getParcelable("userimage");
 
 
         profilepictureactivity_imageview_profileimage = findViewById(R.id.profilepictureactivity_imageview_profileimage);
 
-        //profilepictureactivity_imageview_profileimage.setImageURI();
+        profilepictureactivity_imageview_profileimage.setImageBitmap(userimage);
 
     }
 }

@@ -11,12 +11,14 @@
     <ListView
         android:layout_above="@id/chatrooomactivity_linearlayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="wrap_content">
+    </ListView>
+
+
     <LinearLayout
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:background="@color/colorBackground"
         android:id="@+id/chatrooomactivity_linearlayout"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
@@ -24,12 +26,14 @@
         android:layout_height="wrap_content">
 
         <EditText
+            android:textColor="@android:color/white"
             android:layout_weight="8"
             android:id="@+id/chatroomactivity_edittext_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <android.support.design.widget.FloatingActionButton
+            app:backgroundTint="#000000"
             app:elevation="0dp"
             app:fabSize="mini"
             android:id="@+id/chatroomactivity_floatingbutton_send"

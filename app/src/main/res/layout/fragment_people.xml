@@ -14,9 +14,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
+            android:textSize="15dp"
             android:fontFamily="@font/baeminfont"
             android:defaultFocusHighlightEnabled="false"
-            android:hint="search friend"
+            android:hint="친구 검색"
             android:layout_weight="8"
             android:id="@+id/peoplefragment_edittext_search"
             android:layout_width="0dp"

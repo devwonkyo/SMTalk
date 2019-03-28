@@ -23,6 +23,6 @@ public class ChatRoomActivity extends AppCompatActivity {
         RoomInfo roomInfo = bundle.getParcelable("roominfo");
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(roomInfo.getRoomName());
+        actionBar.setTitle(roomInfo.getRoomName()+"   "+roomInfo.getMemberNumber());
     }
 }

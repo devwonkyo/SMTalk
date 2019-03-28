@@ -1,4 +1,4 @@
-package com.example.dnjsr.smtalk;
+package com.example.dnjsr.smtalk.result;
 
 public class IdCheckResult {
     int result;

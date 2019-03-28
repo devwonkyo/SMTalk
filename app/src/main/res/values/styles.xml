@@ -31,5 +31,5 @@
         parent="Widget.Design.BottomNavigationView">
         <item name="fontFamily">@font/baeminfont</item>
     </style>
-    
+
 </resources>

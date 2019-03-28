@@ -1,6 +1,6 @@
 package com.example.dnjsr.smtalk.api;
 
-import com.example.dnjsr.smtalk.LoginResult;
+import com.example.dnjsr.smtalk.result.LoginResult;
 
 import java.util.HashMap;
 
@@ -11,6 +11,6 @@ import retrofit2.http.POST;
 
 public interface LoginApi {
     @FormUrlEncoded
-    @POST("/login/local")
+    @POST("/login")
     Call<LoginResult> postUserInfo(@FieldMap HashMap<String,String> map);
 }

@@ -4,26 +4,25 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.UserHandle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dnjsr.smtalk.api.IdCheckApi;
 import com.example.dnjsr.smtalk.api.JoinApi;
+import com.example.dnjsr.smtalk.globalVariables.ServerURL;
 import com.example.dnjsr.smtalk.info.UserInfo;
 import com.example.dnjsr.smtalk.pattern.UserIdPattern;
-import com.google.gson.JsonArray;
+import com.example.dnjsr.smtalk.result.IdCheckResult;
+import com.example.dnjsr.smtalk.result.JoinResult;
 
 import java.util.HashMap;
 
@@ -32,7 +31,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.FieldMap;
 
 public class SignupActivity extends AppCompatActivity {
     private EditText id;
@@ -47,6 +45,8 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        final ServerURL serverURL = new ServerURL();
+        final String currentSever = serverURL.getUrl();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.parseColor("#2f2f30"));
@@ -71,7 +71,7 @@ public class SignupActivity extends AppCompatActivity {
                 } else {
 
                     try {
-                        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://18.188.144.183:9999/")
+                        Retrofit retrofit = new Retrofit.Builder().baseUrl(currentSever)
                                 .addConverterFactory(GsonConverterFactory.create()).build();
 
                         IdCheckApi idCheckApi = retrofit.create(IdCheckApi.class);
@@ -182,7 +182,7 @@ public class SignupActivity extends AppCompatActivity {
                 input.put("userName",name.getText().toString());
 
 
-                    Retrofit retrofit = new Retrofit.Builder().baseUrl("http://18.188.144.183:9999/")
+                    Retrofit retrofit = new Retrofit.Builder().baseUrl(currentSever)
                             .addConverterFactory(GsonConverterFactory.create()).build();
 
                     JoinApi joinApi = retrofit.create(JoinApi.class);

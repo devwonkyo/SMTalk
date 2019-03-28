@@ -11,7 +11,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.dnjsr.smtalk.api.LoginApi;
+import com.example.dnjsr.smtalk.globalVariables.ServerURL;
 import com.example.dnjsr.smtalk.info.UserInfo;
+import com.example.dnjsr.smtalk.result.LoginResult;
 
 import java.util.HashMap;
 
@@ -27,11 +29,13 @@ public class LoginActivity extends AppCompatActivity {
     private Button signup;
     private Button login;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        final ServerURL serverURL = new ServerURL();
+        final String currentSever = serverURL.getUrl();
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.parseColor("#2f2f30"));
@@ -55,47 +59,55 @@ public class LoginActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(id.getText().toString().equals("")||password.getText().toString().equals("")){
+                    Toast.makeText(LoginActivity.this, "아이디 또는 비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                }
 
-                /*HashMap<String,String > input = new HashMap<>();
-                input.put("userId",id.getText().toString());
-                input.put("userPassword",password.getText().toString());
+                try {
+                    HashMap<String, String> input = new HashMap<>();
+                    input.put("userId", id.getText().toString());
+                    input.put("userPassword", password.getText().toString());
 
-                Retrofit retrofit = new Retrofit.Builder().baseUrl("http://18.188.144.183:8888/")
-                        .addConverterFactory(GsonConverterFactory.create()).build();
-                LoginApi loginApi = retrofit.create(LoginApi.class);
-                loginApi.postUserInfo(input).enqueue(new Callback<LoginResult>() {
-                    @Override
-                    public void onResponse(Call<LoginResult> call, Response<LoginResult> response) {
-                        if(response.isSuccessful()){
-                            LoginResult map = response.body();
-                            if( map != null){
-                                switch (map.getResult()){
-                                    case -2:
-                                        Toast.makeText(LoginActivity.this, "데이터베이스 오류로 인한 로그인 불가", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case -1:
-                                        Toast.makeText(LoginActivity.this, "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case 0:
-                                        Toast.makeText(LoginActivity.this, "가입되지 않은 유저 입니다.", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case 1:
-                                        UserInfo userinfo = new UserInfo(map.getUserInfo().getUserId(),map.getUserInfo().getUserPassword(),map.getUserInfo().getUserName(),map.getUserInfo().getProfileImg(),"","");
-                                        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                                        intent.putExtra("userinfo",userinfo);
-                                        startActivity(intent);
-                                        break;
+
+                    Retrofit retrofit = new Retrofit.Builder().baseUrl(currentSever)
+                            .addConverterFactory(GsonConverterFactory.create()).build();
+                    LoginApi loginApi = retrofit.create(LoginApi.class);
+                    loginApi.postUserInfo(input).enqueue(new Callback<LoginResult>() {
+                        @Override
+                        public void onResponse(Call<LoginResult> call, Response<LoginResult> response) {
+                            if (response.isSuccessful()) {
+                                LoginResult map = response.body();
+                                if (map != null) {
+                                    switch (map.getResult()) {
+                                        case -2:
+                                            Toast.makeText(LoginActivity.this, "데이터베이스 오류로 인한 로그인 불가", Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case -1:
+                                            Toast.makeText(LoginActivity.this, "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case 0:
+                                            Toast.makeText(LoginActivity.this, "가입되지 않은 유저 입니다.", Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case 1:
+                                            UserInfo userinfo = new UserInfo(map.getUserInfo().getUserId(), map.getUserInfo().getUserPassword(), map.getUserInfo().getUserName(), map.getUserInfo().getProfileImgUrl(), map.getUserInfo().getComment(), map.getUserInfo().get_id(), map.getUserInfo().getFriendsList());
+                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                            intent.putExtra("userinfo", userinfo);
+                                            startActivity(intent);
+                                            break;
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<LoginResult> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<LoginResult> call, Throwable t) {
 
-                    }
-                });*/
-                startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                //startActivity(new Intent(LoginActivity.this,MainActivity.class));
 
 
             }

@@ -1,45 +1,38 @@
 package com.example.dnjsr.smtalk.info;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.net.URI;
+import java.util.List;
 
 public class UserInfo implements Parcelable{
     String userId;
     String userPassword;
     String userName;
-    String profileImg;
-    String contents;
+    String profileImgUrl;
+    String comment;
     String _id;
+    List<UserInfo> friendsList;
+    URI profileImg;
 
-    public UserInfo(String userId, String userPassword, String userName, String profileImg, String contents, String _id) {
+    public UserInfo(String userId, String comment, URI profileImg) {
+        this.userId = userId;
+        this.comment = comment;
+        this.profileImg = profileImg;
+    }
+
+    public UserInfo(String userId, String userPassword, String userName, String profileImgUrl, String comment, String _id, List<UserInfo> friendsList) {
         this.userId = userId;
         this.userPassword = userPassword;
         this.userName = userName;
-        this.profileImg = profileImg;
-        this.contents = contents;
+        this.profileImgUrl = profileImgUrl;
+        this.comment = comment;
         this._id = _id;
+        this.friendsList = friendsList;
     }
-
-    protected UserInfo(Parcel in) {
-        userId = in.readString();
-        userPassword = in.readString();
-        userName = in.readString();
-        profileImg = in.readString();
-        contents = in.readString();
-        _id = in.readString();
-    }
-
-    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
-        @Override
-        public UserInfo createFromParcel(Parcel in) {
-            return new UserInfo(in);
-        }
-
-        @Override
-        public UserInfo[] newArray(int size) {
-            return new UserInfo[size];
-        }
-    };
 
     public String getUserId() {
         return userId;
@@ -65,20 +58,20 @@ public class UserInfo implements Parcelable{
         this.userName = userName;
     }
 
-    public String getProfileImg() {
-        return profileImg;
+    public String getProfileImgUrl() {
+        return profileImgUrl;
     }
 
-    public void setProfileImg(String profileImg) {
-        this.profileImg = profileImg;
+    public void setProfileImgUrl(String profileImgUrl) {
+        this.profileImgUrl = profileImgUrl;
     }
 
-    public String getContents() {
-        return contents;
+    public String getComment() {
+        return comment;
     }
 
-    public void setContents(String contents) {
-        this.contents = contents;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public String get_id() {
@@ -88,6 +81,48 @@ public class UserInfo implements Parcelable{
     public void set_id(String _id) {
         this._id = _id;
     }
+
+    public List<UserInfo> getFriendsList() {
+        return friendsList;
+    }
+
+    public void setFriendsList(List<UserInfo> friendsList) {
+        this.friendsList = friendsList;
+    }
+
+    public URI getProfileImg() {
+        return profileImg;
+    }
+
+    public void setProfileImg(URI profileImg) {
+        this.profileImg = profileImg;
+    }
+
+    public static Creator<UserInfo> getCREATOR() {
+        return CREATOR;
+    }
+
+    protected UserInfo(Parcel in) {
+        userId = in.readString();
+        userPassword = in.readString();
+        userName = in.readString();
+        profileImgUrl = in.readString();
+        comment = in.readString();
+        _id = in.readString();
+        friendsList = in.createTypedArrayList(UserInfo.CREATOR);
+    }
+
+    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
+        @Override
+        public UserInfo createFromParcel(Parcel in) {
+            return new UserInfo(in);
+        }
+
+        @Override
+        public UserInfo[] newArray(int size) {
+            return new UserInfo[size];
+        }
+    };
 
     @Override
     public int describeContents() {
@@ -99,9 +134,11 @@ public class UserInfo implements Parcelable{
         dest.writeString(userId);
         dest.writeString(userPassword);
         dest.writeString(userName);
-        dest.writeString(profileImg);
-        dest.writeString(contents);
+        dest.writeString(profileImgUrl);
+        dest.writeString(comment);
         dest.writeString(_id);
+        dest.writeTypedList(friendsList);
     }
-
 }
+
+

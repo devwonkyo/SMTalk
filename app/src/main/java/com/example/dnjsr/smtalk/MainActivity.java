@@ -3,10 +3,15 @@ package com.example.dnjsr.smtalk;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -27,15 +32,36 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.dnjsr.smtalk.api.FriendListCallApi;
+import com.example.dnjsr.smtalk.api.LoginApi;
 import com.example.dnjsr.smtalk.fragment.ChatFragment;
 import com.example.dnjsr.smtalk.fragment.PeopleFragment;
 import com.example.dnjsr.smtalk.fragment.SettingFragment;
+import com.example.dnjsr.smtalk.globalVariables.ServerURL;
 import com.example.dnjsr.smtalk.info.RoomInfo;
 import com.example.dnjsr.smtalk.info.UserInfo;
+import com.example.dnjsr.smtalk.pattern.UserIdPattern;
+import com.example.dnjsr.smtalk.result.FriendListCallResult;
+import com.example.dnjsr.smtalk.result.LoginResult;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.time.chrono.MinguoChronology;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     ActionBar actionBar;
@@ -51,10 +77,6 @@ public class MainActivity extends AppCompatActivity {
     static String membercount;
     List<UserInfo> userInfos;
     List<RoomInfo> roomInfos;
-
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -73,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -97,26 +120,141 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ServerURL serverURL = new ServerURL();
+        final String currentServer = serverURL.getUrl();
 
         userInfos = new ArrayList<>();
+        Bundle bundle = getIntent().getExtras();
+        final UserInfo userinfo = bundle.getParcelable("userinfo");
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    HashMap<String, String> input = new HashMap<>();
+                    input.put("_id", userinfo.get_id());
+
+                    Retrofit retrofit = new Retrofit.Builder().baseUrl(currentServer)
+                            .addConverterFactory(GsonConverterFactory.create()).build();
+                    FriendListCallApi friendListCallApi = retrofit.create(FriendListCallApi.class);
+                    friendListCallApi.postUserInfo(input).enqueue(new Callback<FriendListCallResult>() {
+                        @Override
+                        public void onResponse(Call<FriendListCallResult> call, Response<FriendListCallResult> response) {
+                            if (response.isSuccessful()) {
+                                final FriendListCallResult map = response.body();
+                                if (map != null) {
+                                    switch (map.getResult()) {
+                                        case -1:
+                                            Toast.makeText(MainActivity.this, "데이터 베이스 오류입니다.", Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case 0:
+                                            Toast.makeText(MainActivity.this, "로드 실패.", Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case 1:
+                                            Thread thread_inner = new Thread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    for (UserInfo userInfo : map.getFriendsList()) {
+                                                        URL url = null;
+                                                        try {
+                                                            url = new URL(currentServer + userInfo.getProfileImgUrl());
+                                                        } catch (MalformedURLException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                            URI uri = null;
+                                                        try {
+                                                            uri = url.toURI();
+                                                        } catch (URISyntaxException e) {
+                                                            e.printStackTrace();
+                                                        }
+
+                                                        /*InputStream inputStream = null;
+                                                        try {
+                                                            inputStream = url.openStream();
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                        final Bitmap bm = BitmapFactory.decodeStream(inputStream);
+                                                        userInfo.setProfileImg(bm);*/
+                                                        userInfo.setProfileImg(uri);
+                                                        userInfos.add(userInfo);
+                                                    }
+                                                }
+                                            });
+                                            thread_inner.start();
+
+
+                                            Toast.makeText(MainActivity.this,map.getFriendsList().get(0).getUserName(), Toast.LENGTH_SHORT).show();
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<FriendListCallResult> call, Throwable t) {
+
+                        }
+
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+        /*try {
+            HashMap<String, String> input = new HashMap<>();
+            input.put("_id", userinfo.get_id());
+
+            Retrofit retrofit = new Retrofit.Builder().baseUrl(currentServer)
+                    .addConverterFactory(GsonConverterFactory.create()).build();
+            FriendListCallApi friendListCallApi = retrofit.create(FriendListCallApi.class);
+            friendListCallApi.postUserInfo(input).enqueue(new Callback<FriendListCallResult>() {
+                @Override
+                public void onResponse(Call<FriendListCallResult> call, Response<FriendListCallResult> response) {
+                    if (response.isSuccessful()) {
+                        FriendListCallResult map = response.body();
+                        if (map != null) {
+                            switch (map.getResult()) {
+                                case -1:
+                                    Toast.makeText(MainActivity.this, "데이터 베이스 오류입니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 0:
+                                    Toast.makeText(MainActivity.this, "로드 실패.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 1:
+                                    for(UserInfo userInfo : map.getFriendsList()){
+                                        userInfos.add(userInfo);
+                                    }
+                                    Toast.makeText(MainActivity.this,map.getFriendsList().get(0).getUserName(), Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<FriendListCallResult> call, Throwable t) {
+
+                }
+
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }*/
+
+        //userInfos = new ArrayList<>();
+
         roomInfos = new ArrayList<>();
 
-//        -----------------------------------------------------------------------------------------------------------------------------------------
-        userInfos.add(new UserInfo("ww","wonkyo","wonkyo","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","dong","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","gun","","오늘 코딩 ㄴ","hi"));    //userinfo 객체 input
-        userInfos.add(new UserInfo("ww","wonkyo","wkyo","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","hyo","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","ggggyo","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","woleho","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","wttyo","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","이동o","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","w원교yo","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","wo효근o","","오늘 코딩 ㄴ","hi"));
-//        -------------------------------------------------------------------------------------------------------------------------------------------
+
 
         roomInfos.add(new RoomInfo("프젝","3"));
         roomInfos.add(new RoomInfo("1학년과톡","15"));                                                              //roominfo 객체 input
+        roomInfos.add(new RoomInfo("ㅂㄹㅊㄱ","6"));
+        roomInfos.add(new RoomInfo("ㅂㄹㅊㄱ","6"));
+        roomInfos.add(new RoomInfo("ㅂㄹㅊㄱ","6"));
         roomInfos.add(new RoomInfo("ㅂㄹㅊㄱ","6"));
 
 //        ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -135,8 +273,7 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.parseColor("#2f2f30"));
         }
 
-       /* Bundle bundle = getIntent().getExtras();
-        UserInfo userinfo = bundle.getParcelable("userinfo");*/
+
 
 
         /*Intent intent = getIntent();
@@ -156,6 +293,7 @@ public class MainActivity extends AppCompatActivity {
                         actionBar.setTitle("친구");
                         item_newfriend.setVisible(true);
                         item_newroom.setVisible(false);
+                        //peopleFragment.setUserInfos(userInfos);
                         getSupportFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout,peopleFragment).commit();
                         return true;
                     case R.id.action_chat:
