@@ -3,6 +3,7 @@ package com.example.dnjsr.smtalk.fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ import com.example.dnjsr.smtalk.globalVariables.ServerURL;
 import com.example.dnjsr.smtalk.info.UserInfo;
 import com.github.nkzawa.socketio.client.Url;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,8 +36,7 @@ public class PeopleFragment extends Fragment {
 
 
     List<UserInfo> userInfos = new ArrayList<>();
-    ServerURL serverURL = new ServerURL();
-    String currentServer = serverURL.getUrl();
+
 
     public List<UserInfo> getUserInfos() {
         return userInfos;
@@ -49,6 +50,11 @@ public class PeopleFragment extends Fragment {
     private ImageView peoplefragment_imageview_search;
     private TextView peoplefragment_textview_friendlist;
     private PeopleFragmentRecyclerViewAdapter peopleFragmentRecyclerViewAdapter;
+
+    public void notifyDataSetChangeed(ArrayList<UserInfo> userInfos){
+        peopleFragmentRecyclerViewAdapter.filterList(userInfos);
+    }
+
     
 
 
@@ -60,6 +66,7 @@ public class PeopleFragment extends Fragment {
         peoplefragment_imageview_search = view.findViewById(R.id.peoplefragment_imageview_search);
         peoplefragment_edittext_search = view.findViewById(R.id.peoplefragment_edittext_search);
         peoplefragment_textview_friendlist = view.findViewById(R.id.peoplefragment_textview_friendlist);
+
 
        //userInfos = new ArrayList<>();                               //친구목록 data input
 
@@ -97,6 +104,8 @@ public class PeopleFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(inflater.getContext()));
         peopleFragmentRecyclerViewAdapter = new PeopleFragmentRecyclerViewAdapter();
         recyclerView.setAdapter(peopleFragmentRecyclerViewAdapter);
+
+
         return view;
 
     }
@@ -123,6 +132,7 @@ public class PeopleFragment extends Fragment {
 
         public PeopleFragmentRecyclerViewAdapter() {
 
+
             adapterList = new ArrayList<UserInfo>();                                    //filtering된 친구목록
 
            for(UserInfo userInfo : userInfos){
@@ -140,15 +150,21 @@ public class PeopleFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, final int i) {
-            ((CustomViewHolder)viewHolder).profileImage.set(adapterList.get(i).getProfileImg());
+            ((CustomViewHolder)viewHolder).profileImage.setImageBitmap(adapterList.get(i).getProfileImg());
             ((CustomViewHolder)viewHolder).textview_name.setText(adapterList.get(i).getUserName());
             ((CustomViewHolder)viewHolder).textview_message.setText(adapterList.get(i).getComment());
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UserInfo seletedUserInfo = new UserInfo(adapterList.get(i).getUserName(),adapterList.get(i).getComment(),adapterList.get(i).getProfileImg());
+
+                    UserInfo selectedUserInfo = new UserInfo(adapterList.get(i).getUserName(),adapterList.get(i).getComment(),adapterList.get(i).getProfileImg());
+                    ServerURL.setUserInfo(selectedUserInfo);
+//                    UserInfo selectedUserInfo = new UserInfo(adapterList.get(i).getUserName(),adapterList.get(i).getComment());
                     Intent intent = new Intent(v.getContext(),ProfileActivity.class);
-                    intent.putExtra("selectedinfo",seletedUserInfo);
+                    /*intent.putExtra("selectedinfo",selectedUserInfo);
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    adapterList.get(i).getProfileImg().compress(Bitmap.CompressFormat.PNG,50,byteArrayOutputStream);
+                    intent.putExtra("byteArray",byteArrayOutputStream.toByteArray());*/
                     startActivity(intent);
                 }
             });

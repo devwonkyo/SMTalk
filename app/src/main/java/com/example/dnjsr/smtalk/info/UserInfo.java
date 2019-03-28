@@ -5,10 +5,11 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.util.List;
 
-public class UserInfo implements Parcelable{
+public class UserInfo implements Parcelable {
     String userId;
     String userPassword;
     String userName;
@@ -16,10 +17,17 @@ public class UserInfo implements Parcelable{
     String comment;
     String _id;
     List<UserInfo> friendsList;
-    URI profileImg;
+    Bitmap profileImg;
 
-    public UserInfo(String userId, String comment, URI profileImg) {
-        this.userId = userId;
+    public UserInfo() { }
+
+    public UserInfo(String userName, String comment) {
+        this.userName = userName;
+        this.comment = comment;
+    }
+
+    public UserInfo(String userName, String comment, Bitmap profileImg) {
+        this.userName = userName;
         this.comment = comment;
         this.profileImg = profileImg;
     }
@@ -90,11 +98,11 @@ public class UserInfo implements Parcelable{
         this.friendsList = friendsList;
     }
 
-    public URI getProfileImg() {
+    public Bitmap getProfileImg() {
         return profileImg;
     }
 
-    public void setProfileImg(URI profileImg) {
+    public void setProfileImg(Bitmap profileImg) {
         this.profileImg = profileImg;
     }
 
@@ -110,6 +118,7 @@ public class UserInfo implements Parcelable{
         comment = in.readString();
         _id = in.readString();
         friendsList = in.createTypedArrayList(UserInfo.CREATOR);
+        profileImg = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
     public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
@@ -138,6 +147,7 @@ public class UserInfo implements Parcelable{
         dest.writeString(comment);
         dest.writeString(_id);
         dest.writeTypedList(friendsList);
+        dest.writeParcelable(profileImg, flags);
     }
 }
 

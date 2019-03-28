@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Message;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     static String membercount;
     List<UserInfo> userInfos;
     List<RoomInfo> roomInfos;
+    Handler handler;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,9 +103,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.item_newfriend:
-                DialogFragment friendDialogFragmnet = new FriendDialogFragment();
-                friendDialogFragmnet.setCancelable(false);
-                friendDialogFragmnet.show(getSupportFragmentManager(),"frienddialogfragment");
+                getSupportFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout,peopleFragment).commit();
                 return true;
             case R.id.item_newroom:
                 DialogFragment roomDialogFragmnet = new RoomDialogFragment();
@@ -122,8 +122,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ServerURL serverURL = new ServerURL();
         final String currentServer = serverURL.getUrl();
-
         userInfos = new ArrayList<>();
+
+        handler = new Handler(){
+
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if(msg.what == 0) {
+                    peopleFragment.notifyDataSetChangeed((ArrayList<UserInfo>) userInfos);
+                    Log.d("test123","핸들러받고 다시 초기화");
+                }
+
+            }
+        };
+
+
+
+
         Bundle bundle = getIntent().getExtras();
         final UserInfo userinfo = bundle.getParcelable("userinfo");
 
@@ -131,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try{
+                    Log.d("test123","쓰레드1 시작");
                     HashMap<String, String> input = new HashMap<>();
                     input.put("_id", userinfo.get_id());
 
@@ -154,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
                                             Thread thread_inner = new Thread(new Runnable() {
                                                 @Override
                                                 public void run() {
+                                                    Log.d("test123","쓰레드2 시작");
                                                     for (UserInfo userInfo : map.getFriendsList()) {
                                                         URL url = null;
                                                         try {
@@ -161,30 +179,24 @@ public class MainActivity extends AppCompatActivity {
                                                         } catch (MalformedURLException e) {
                                                             e.printStackTrace();
                                                         }
-                                                            URI uri = null;
-                                                        try {
-                                                            uri = url.toURI();
-                                                        } catch (URISyntaxException e) {
-                                                            e.printStackTrace();
-                                                        }
 
-                                                        /*InputStream inputStream = null;
+                                                        InputStream inputStream = null;
                                                         try {
                                                             inputStream = url.openStream();
                                                         } catch (IOException e) {
                                                             e.printStackTrace();
                                                         }
                                                         final Bitmap bm = BitmapFactory.decodeStream(inputStream);
-                                                        userInfo.setProfileImg(bm);*/
-                                                        userInfo.setProfileImg(uri);
+                                                        userInfo.setProfileImg(bm);
                                                         userInfos.add(userInfo);
                                                     }
+                                                    Log.d("test123","userInfos 완료");
+                                                    handler.sendEmptyMessage(0);
+                                                    Log.d("test123","핸들러메시지보냄");
                                                 }
                                             });
                                             thread_inner.start();
-
-
-                                            Toast.makeText(MainActivity.this,map.getFriendsList().get(0).getUserName(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MainActivity.this,"소캣톡 환영합니다!", Toast.LENGTH_SHORT).show();
                                             break;
                                     }
                                 }
@@ -200,9 +212,14 @@ public class MainActivity extends AppCompatActivity {
                 }catch (Exception e){
                     e.printStackTrace();
                 }
+
             }
         });
+
         thread.start();
+
+
+
         /*try {
             HashMap<String, String> input = new HashMap<>();
             input.put("_id", userinfo.get_id());
@@ -265,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
         dialog_newroom = inflater.inflate(R.layout.dialog_newroom,null);                      //dialog layout inflate
 
         peopleFragment = new PeopleFragment();
+        Log.d("test123","framgnet 만듦 ");
         chatFragment = new ChatFragment();
         settingFragment = new SettingFragment();
 
@@ -279,8 +297,10 @@ public class MainActivity extends AppCompatActivity {
         /*Intent intent = getIntent();
         UserInfo userInfo = intent.getParcelableExtra("userinfo");*/
         chatFragment.setRoomAdapterList(roomInfos);                                                                     //chat fragment로 roominfos객체리스트 전달
-        peopleFragment.setUserInfos(userInfos);                                                                         //people fragment로 userinfos객체리스트 전달
+        peopleFragment.setUserInfos(userInfos);                                                                        //people fragment로 userinfos객체리스트 전달
+        Log.d("test123"," 프레그먼트에 인포 넣음");
         getSupportFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout,peopleFragment).commit();  //people fragment로 초기화
+        Log.d("test123","프래그먼트 화면 초기화");
 
         BottomNavigationView mainactivity_bottomnavigationview = findViewById(R.id.mainactivity_bottomnavigationview);
 
