@@ -10,10 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.dnjsr.smtalk.api.LoginApi;
+import com.example.dnjsr.smtalk.api.RetrofitApi;
+import com.example.dnjsr.smtalk.globalVariables.CurrentUserInfo;
 import com.example.dnjsr.smtalk.globalVariables.ServerURL;
 import com.example.dnjsr.smtalk.info.UserInfo;
 import com.example.dnjsr.smtalk.result.LoginResult;
+import com.example.dnjsr.smtalk.update.UserLogin;
 
 import java.util.HashMap;
 
@@ -33,8 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        final ServerURL serverURL = new ServerURL();
-        final String currentSever = serverURL.getUrl();
+        final String currentSever = ServerURL.getUrl();
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -71,8 +72,8 @@ public class LoginActivity extends AppCompatActivity {
 
                     Retrofit retrofit = new Retrofit.Builder().baseUrl(currentSever)
                             .addConverterFactory(GsonConverterFactory.create()).build();
-                    LoginApi loginApi = retrofit.create(LoginApi.class);
-                    loginApi.postUserInfo(input).enqueue(new Callback<LoginResult>() {
+                    RetrofitApi loginApi = retrofit.create(RetrofitApi.class);
+                    loginApi.postLoginUserInfo(input).enqueue(new Callback<LoginResult>() {
                         @Override
                         public void onResponse(Call<LoginResult> call, Response<LoginResult> response) {
                             if (response.isSuccessful()) {
@@ -89,10 +90,14 @@ public class LoginActivity extends AppCompatActivity {
                                             Toast.makeText(LoginActivity.this, "가입되지 않은 유저 입니다.", Toast.LENGTH_SHORT).show();
                                             break;
                                         case 1:
-                                            UserInfo userinfo = new UserInfo(map.getUserInfo().getUserId(), map.getUserInfo().getUserPassword(), map.getUserInfo().getUserName(), map.getUserInfo().getProfileImgUrl(), map.getUserInfo().getComment(), map.getUserInfo().get_id(), map.getUserInfo().getFriendsList());
+                                            UserLogin userLogin = new UserLogin();
+                                            userLogin.Login(id.getText().toString(),password.getText().toString(),new Intent(LoginActivity.this,MainActivity.class),LoginActivity.this);
+                                           /* UserInfo userinfo = map.getUserInfo();
+                                            CurrentUserInfo.setUserInfo(map.getUserInfo());
                                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                             intent.putExtra("userinfo", userinfo);
                                             startActivity(intent);
+                                            finish();*/
                                             break;
                                     }
                                 }

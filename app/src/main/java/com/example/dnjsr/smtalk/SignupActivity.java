@@ -16,8 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.dnjsr.smtalk.api.IdCheckApi;
-import com.example.dnjsr.smtalk.api.JoinApi;
+import com.example.dnjsr.smtalk.api.RetrofitApi;
 import com.example.dnjsr.smtalk.globalVariables.ServerURL;
 import com.example.dnjsr.smtalk.info.UserInfo;
 import com.example.dnjsr.smtalk.pattern.UserIdPattern;
@@ -45,8 +44,8 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-        final ServerURL serverURL = new ServerURL();
-        final String currentSever = serverURL.getUrl();
+
+        final String currentSever = ServerURL.getUrl();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.parseColor("#2f2f30"));
@@ -74,8 +73,8 @@ public class SignupActivity extends AppCompatActivity {
                         Retrofit retrofit = new Retrofit.Builder().baseUrl(currentSever)
                                 .addConverterFactory(GsonConverterFactory.create()).build();
 
-                        IdCheckApi idCheckApi = retrofit.create(IdCheckApi.class);
-                        idCheckApi.getUserId(userId).enqueue(new Callback<IdCheckResult>() {
+                        RetrofitApi idCheckApi = retrofit.create(RetrofitApi.class);
+                        idCheckApi.idCheck(userId).enqueue(new Callback<IdCheckResult>() {
                             @Override
                             public void onResponse(Call<IdCheckResult> call, Response<IdCheckResult> response) {
                                 if (response.isSuccessful()) {
@@ -185,7 +184,7 @@ public class SignupActivity extends AppCompatActivity {
                     Retrofit retrofit = new Retrofit.Builder().baseUrl(currentSever)
                             .addConverterFactory(GsonConverterFactory.create()).build();
 
-                    JoinApi joinApi = retrofit.create(JoinApi.class);
+                    RetrofitApi joinApi = retrofit.create(RetrofitApi.class);
 
                     joinApi.postJoinUserInfo(input).enqueue(new Callback<JoinResult>() {
                         @Override

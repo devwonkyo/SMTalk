@@ -3,14 +3,23 @@ package com.example.dnjsr.smtalk.info;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class RoomInfo implements Parcelable {
-    String roomId;
-    String roomName;
-    String memberNumber;
+import java.util.Date;
+import java.util.List;
 
-    public RoomInfo(String roomName, String memberNumber) {
+public class RoomInfo implements Parcelable {
+    String roomName;
+    String lastChat;
+    String unreadCount;
+    List<UserInfo> usersList;
+    Date createAt;
+
+    public RoomInfo() {
+    }
+
+    public RoomInfo(String roomName, String lastChat, String unreadCount) {
         this.roomName = roomName;
-        this.memberNumber = memberNumber;
+        this.lastChat = lastChat;
+        this.unreadCount = unreadCount;
     }
 
     public String getRoomName() {
@@ -21,12 +30,36 @@ public class RoomInfo implements Parcelable {
         this.roomName = roomName;
     }
 
-    public String getMemberNumber() {
-        return memberNumber;
+    public String getLastChat() {
+        return lastChat;
     }
 
-    public void setMemberNumber(String memberNumber) {
-        this.memberNumber = memberNumber;
+    public void setLastChat(String lastChat) {
+        this.lastChat = lastChat;
+    }
+
+    public String getUnreadCount() {
+        return unreadCount;
+    }
+
+    public void setUnreadCount(String unreadCount) {
+        this.unreadCount = unreadCount;
+    }
+
+    public List<UserInfo> getUsersList() {
+        return usersList;
+    }
+
+    public void setUsersList(List<UserInfo> usersList) {
+        this.usersList = usersList;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
     }
 
     public static Creator<RoomInfo> getCREATOR() {
@@ -35,7 +68,9 @@ public class RoomInfo implements Parcelable {
 
     protected RoomInfo(Parcel in) {
         roomName = in.readString();
-        memberNumber = in.readString();
+        lastChat = in.readString();
+        unreadCount = in.readString();
+        usersList = in.createTypedArrayList(UserInfo.CREATOR);
     }
 
     public static final Creator<RoomInfo> CREATOR = new Creator<RoomInfo>() {
@@ -58,7 +93,9 @@ public class RoomInfo implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(roomName);
-        dest.writeString(memberNumber);
+        dest.writeString(lastChat);
+        dest.writeString(unreadCount);
+        dest.writeTypedList(usersList);
     }
 }
 

@@ -10,6 +10,7 @@ import java.net.URI;
 import java.util.List;
 
 public class UserInfo implements Parcelable {
+    Boolean isChange = false;
     String userId;
     String userPassword;
     String userName;
@@ -17,29 +18,42 @@ public class UserInfo implements Parcelable {
     String comment;
     String _id;
     List<UserInfo> friendsList;
+    List<RoomInfo> roomsList;
     Bitmap profileImg;
 
-    public UserInfo() { }
-
-    public UserInfo(String userName, String comment) {
-        this.userName = userName;
-        this.comment = comment;
+    public UserInfo() {
     }
 
-    public UserInfo(String userName, String comment, Bitmap profileImg) {
-        this.userName = userName;
-        this.comment = comment;
-        this.profileImg = profileImg;
+    protected UserInfo(Parcel in) {
+        userId = in.readString();
+        userPassword = in.readString();
+        userName = in.readString();
+        profileImgUrl = in.readString();
+        comment = in.readString();
+        _id = in.readString();
+        friendsList = in.createTypedArrayList(UserInfo.CREATOR);
+        roomsList = in.createTypedArrayList(RoomInfo.CREATOR);
+        profileImg = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
-    public UserInfo(String userId, String userPassword, String userName, String profileImgUrl, String comment, String _id, List<UserInfo> friendsList) {
-        this.userId = userId;
-        this.userPassword = userPassword;
-        this.userName = userName;
-        this.profileImgUrl = profileImgUrl;
-        this.comment = comment;
-        this._id = _id;
-        this.friendsList = friendsList;
+    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
+        @Override
+        public UserInfo createFromParcel(Parcel in) {
+            return new UserInfo(in);
+        }
+
+        @Override
+        public UserInfo[] newArray(int size) {
+            return new UserInfo[size];
+        }
+    };
+
+    public Boolean getChange() {
+        return isChange;
+    }
+
+    public void setChange(Boolean change) {
+        isChange = change;
     }
 
     public String getUserId() {
@@ -98,6 +112,14 @@ public class UserInfo implements Parcelable {
         this.friendsList = friendsList;
     }
 
+    public List<RoomInfo> getRoomsList() {
+        return roomsList;
+    }
+
+    public void setRoomsList(List<RoomInfo> roomsList) {
+        this.roomsList = roomsList;
+    }
+
     public Bitmap getProfileImg() {
         return profileImg;
     }
@@ -105,33 +127,6 @@ public class UserInfo implements Parcelable {
     public void setProfileImg(Bitmap profileImg) {
         this.profileImg = profileImg;
     }
-
-    public static Creator<UserInfo> getCREATOR() {
-        return CREATOR;
-    }
-
-    protected UserInfo(Parcel in) {
-        userId = in.readString();
-        userPassword = in.readString();
-        userName = in.readString();
-        profileImgUrl = in.readString();
-        comment = in.readString();
-        _id = in.readString();
-        friendsList = in.createTypedArrayList(UserInfo.CREATOR);
-        profileImg = in.readParcelable(Bitmap.class.getClassLoader());
-    }
-
-    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
-        @Override
-        public UserInfo createFromParcel(Parcel in) {
-            return new UserInfo(in);
-        }
-
-        @Override
-        public UserInfo[] newArray(int size) {
-            return new UserInfo[size];
-        }
-    };
 
     @Override
     public int describeContents() {
@@ -147,6 +142,7 @@ public class UserInfo implements Parcelable {
         dest.writeString(comment);
         dest.writeString(_id);
         dest.writeTypedList(friendsList);
+        dest.writeTypedList(roomsList);
         dest.writeParcelable(profileImg, flags);
     }
 }

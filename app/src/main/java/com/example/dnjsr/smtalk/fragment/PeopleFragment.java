@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.example.dnjsr.smtalk.ProfileActivity;
 import com.example.dnjsr.smtalk.R;
+import com.example.dnjsr.smtalk.globalVariables.SelectedUserInfo;
 import com.example.dnjsr.smtalk.globalVariables.ServerURL;
 import com.example.dnjsr.smtalk.info.UserInfo;
 import com.github.nkzawa.socketio.client.Url;
@@ -157,8 +158,7 @@ public class PeopleFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    UserInfo selectedUserInfo = new UserInfo(adapterList.get(i).getUserName(),adapterList.get(i).getComment(),adapterList.get(i).getProfileImg());
-                    ServerURL.setUserInfo(selectedUserInfo);
+                    SelectedUserInfo.setUserInfo(adapterList.get(i));
 //                    UserInfo selectedUserInfo = new UserInfo(adapterList.get(i).getUserName(),adapterList.get(i).getComment());
                     Intent intent = new Intent(v.getContext(),ProfileActivity.class);
                     /*intent.putExtra("selectedinfo",selectedUserInfo);

@@ -1,59 +1,44 @@
 package com.example.dnjsr.smtalk;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.dnjsr.smtalk.api.FriendListCallApi;
-import com.example.dnjsr.smtalk.api.LoginApi;
+import com.example.dnjsr.smtalk.api.RetrofitApi;
 import com.example.dnjsr.smtalk.fragment.ChatFragment;
 import com.example.dnjsr.smtalk.fragment.PeopleFragment;
 import com.example.dnjsr.smtalk.fragment.SettingFragment;
+import com.example.dnjsr.smtalk.globalVariables.CurrentUserInfo;
+import com.example.dnjsr.smtalk.globalVariables.IsLogin;
 import com.example.dnjsr.smtalk.globalVariables.ServerURL;
 import com.example.dnjsr.smtalk.info.RoomInfo;
 import com.example.dnjsr.smtalk.info.UserInfo;
-import com.example.dnjsr.smtalk.pattern.UserIdPattern;
 import com.example.dnjsr.smtalk.result.FriendListCallResult;
-import com.example.dnjsr.smtalk.result.LoginResult;
+import com.example.dnjsr.smtalk.result.RoomListCallResult;
+import com.example.dnjsr.smtalk.update.RoomsListCall;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.chrono.MinguoChronology;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,6 +65,12 @@ public class MainActivity extends AppCompatActivity {
     List<RoomInfo> roomInfos;
     Handler handler;
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         inflater = getMenuInflater();
@@ -103,12 +94,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.item_newfriend:
-                getSupportFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout,peopleFragment).commit();
+                startActivity(new Intent(MainActivity.this,SearchActivity.class));
                 return true;
             case R.id.item_newroom:
-                DialogFragment roomDialogFragmnet = new RoomDialogFragment();
-                roomDialogFragmnet.setCancelable(false);
-                roomDialogFragmnet.show(getSupportFragmentManager(),"roomdialogfragment");
+
                 return true;
                 default:
                     return super.onOptionsItemSelected(item);
@@ -120,9 +109,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ServerURL serverURL = new ServerURL();
-        final String currentServer = serverURL.getUrl();
+        final String currentServer = ServerURL.getUrl();
+
+        peopleFragment = new PeopleFragment();
+        chatFragment = new ChatFragment();
+        settingFragment = new SettingFragment();
+
         userInfos = new ArrayList<>();
+        roomInfos = new ArrayList<>();
+
 
         handler = new Handler(){
 
@@ -131,17 +126,22 @@ public class MainActivity extends AppCompatActivity {
                 super.handleMessage(msg);
                 if(msg.what == 0) {
                     peopleFragment.notifyDataSetChangeed((ArrayList<UserInfo>) userInfos);
+                    peopleFragment.setUserInfos(userInfos);
                     Log.d("test123","핸들러받고 다시 초기화");
                 }
-
+                if(msg.what ==1){
+                    Log.d("test123","핸들러2 받고 다시초기화");
+                    //chatFragment.notifyDataSetChangeed((ArrayList<RoomInfo>) roomInfos);
+                    chatFragment.setRoomAdapterList(roomInfos);
+                }
             }
         };
 
 
 
 
-        Bundle bundle = getIntent().getExtras();
-        final UserInfo userinfo = bundle.getParcelable("userinfo");
+      /*  Bundle bundle = getIntent().getExtras();
+        final UserInfo userinfo = bundle.getParcelable("userinfo");*/
 
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -149,12 +149,12 @@ public class MainActivity extends AppCompatActivity {
                 try{
                     Log.d("test123","쓰레드1 시작");
                     HashMap<String, String> input = new HashMap<>();
-                    input.put("_id", userinfo.get_id());
+                    input.put("_id", CurrentUserInfo.getUserInfo().get_id());
 
                     Retrofit retrofit = new Retrofit.Builder().baseUrl(currentServer)
                             .addConverterFactory(GsonConverterFactory.create()).build();
-                    FriendListCallApi friendListCallApi = retrofit.create(FriendListCallApi.class);
-                    friendListCallApi.postUserInfo(input).enqueue(new Callback<FriendListCallResult>() {
+                    RetrofitApi friendListCallApi = retrofit.create(RetrofitApi.class);
+                    friendListCallApi.postUserInfoForFriendList(input).enqueue(new Callback<FriendListCallResult>() {
                         @Override
                         public void onResponse(Call<FriendListCallResult> call, Response<FriendListCallResult> response) {
                             if (response.isSuccessful()) {
@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                                             Toast.makeText(MainActivity.this, "데이터 베이스 오류입니다.", Toast.LENGTH_SHORT).show();
                                             break;
                                         case 0:
-                                            Toast.makeText(MainActivity.this, "로드 실패.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MainActivity.this, "등록된 친구가 없습니다.", Toast.LENGTH_SHORT).show();
                                             break;
                                         case 1:
                                             Thread thread_inner = new Thread(new Runnable() {
@@ -220,85 +220,29 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        /*try {
-            HashMap<String, String> input = new HashMap<>();
-            input.put("_id", userinfo.get_id());
-
-            Retrofit retrofit = new Retrofit.Builder().baseUrl(currentServer)
-                    .addConverterFactory(GsonConverterFactory.create()).build();
-            FriendListCallApi friendListCallApi = retrofit.create(FriendListCallApi.class);
-            friendListCallApi.postUserInfo(input).enqueue(new Callback<FriendListCallResult>() {
-                @Override
-                public void onResponse(Call<FriendListCallResult> call, Response<FriendListCallResult> response) {
-                    if (response.isSuccessful()) {
-                        FriendListCallResult map = response.body();
-                        if (map != null) {
-                            switch (map.getResult()) {
-                                case -1:
-                                    Toast.makeText(MainActivity.this, "데이터 베이스 오류입니다.", Toast.LENGTH_SHORT).show();
-                                    break;
-                                case 0:
-                                    Toast.makeText(MainActivity.this, "로드 실패.", Toast.LENGTH_SHORT).show();
-                                    break;
-                                case 1:
-                                    for(UserInfo userInfo : map.getFriendsList()){
-                                        userInfos.add(userInfo);
-                                    }
-                                    Toast.makeText(MainActivity.this,map.getFriendsList().get(0).getUserName(), Toast.LENGTH_SHORT).show();
-                                    break;
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<FriendListCallResult> call, Throwable t) {
-
-                }
-
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-        }*/
-
-        //userInfos = new ArrayList<>();
-
-        roomInfos = new ArrayList<>();
-
-
-
-        roomInfos.add(new RoomInfo("프젝","3"));
-        roomInfos.add(new RoomInfo("1학년과톡","15"));                                                              //roominfo 객체 input
-        roomInfos.add(new RoomInfo("ㅂㄹㅊㄱ","6"));
-        roomInfos.add(new RoomInfo("ㅂㄹㅊㄱ","6"));
-        roomInfos.add(new RoomInfo("ㅂㄹㅊㄱ","6"));
-        roomInfos.add(new RoomInfo("ㅂㄹㅊㄱ","6"));
-
-//        ---------------------------------------------------------------------------------------------------------------------------------------------
-
-//        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         LayoutInflater inflater = getLayoutInflater();
         dialog_newfriend = inflater.inflate(R.layout.dialog_newfriend,null);
         dialog_newroom = inflater.inflate(R.layout.dialog_newroom,null);                      //dialog layout inflate
 
-        peopleFragment = new PeopleFragment();
-        Log.d("test123","framgnet 만듦 ");
-        chatFragment = new ChatFragment();
-        settingFragment = new SettingFragment();
 
+        getRoomsList(CurrentUserInfo.getUserInfo().get_id());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.parseColor("#2f2f30"));
         }
 
-
+        /*roomInfos.add(new RoomInfo("이동영","ㅎㅎ","1"));
+        roomInfos.add(new RoomInfo("정원교","ㅋㅋㅋㅋㅋㅋ","1"));
+        roomInfos.add(new RoomInfo("방효근","???????","1"));
+        roomInfos.add(new RoomInfo("이동영","ㅎㅎ","1"));
+        chatFragment.setRoomAdapterList(roomInfos);
+*/
 
 
         /*Intent intent = getIntent();
         UserInfo userInfo = intent.getParcelableExtra("userinfo");*/
-        chatFragment.setRoomAdapterList(roomInfos);                                                                     //chat fragment로 roominfos객체리스트 전달
-        peopleFragment.setUserInfos(userInfos);                                                                        //people fragment로 userinfos객체리스트 전달
-        Log.d("test123"," 프레그먼트에 인포 넣음");
+
+
         getSupportFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout,peopleFragment).commit();  //people fragment로 초기화
         Log.d("test123","프래그먼트 화면 초기화");
 
@@ -313,7 +257,6 @@ public class MainActivity extends AppCompatActivity {
                         actionBar.setTitle("친구");
                         item_newfriend.setVisible(true);
                         item_newroom.setVisible(false);
-                        //peopleFragment.setUserInfos(userInfos);
                         getSupportFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout,peopleFragment).commit();
                         return true;
                     case R.id.action_chat:
@@ -337,49 +280,51 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public static class FriendDialogFragment extends DialogFragment{
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("친구추가").setView(R.layout.dialog_newfriend).setPositiveButton("추가", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
+    public void getRoomsList(String _id){
 
-
-                }
-            }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
-            return builder.create();
+            try {
+                HashMap<String, String> input = new HashMap<>();
+                input.put("_id", _id);
+                Retrofit retrofit = new Retrofit.Builder().baseUrl(ServerURL.getUrl())
+                        .addConverterFactory(GsonConverterFactory.create()).build();
+                RetrofitApi retrofitApi = retrofit.create(RetrofitApi.class);
+                retrofitApi.post_idForRoomList(input).enqueue(new Callback<RoomListCallResult>() {
+                    @Override
+                    public void onResponse(Call<RoomListCallResult> call, final Response<RoomListCallResult> response) {
+                            Thread roomThread = new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (response.isSuccessful()) {
+                                        RoomListCallResult map = response.body();
+                                        if (map != null) {
+                                            switch (map.getResult()) {
+                                                case 0:
+                                                    Log.d("12321","room listr fail");
+                                                    break;
+                                                case 1:
+                                                    Log.d("12321","room list ok");
+                                                    CurrentUserInfo.getUserInfo().setRoomsList(map.getRoomsList());
+                                                    roomInfos = map.getRoomsList();
+                                                    handler.sendEmptyMessage(1);
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                            roomThread.start();
+                    }
+                    @Override
+                    public void onFailure(Call<RoomListCallResult> call, Throwable t) {
+                        Log.d("12321","fail to connect :  roomlist");
+                    }
+                });
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
-    }
 
 
-    public static class RoomDialogFragment extends DialogFragment{
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("방 생성").setView(R.layout.dialog_newroom).setPositiveButton("생성", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    EditText dialog_edittext_roomname = dialog_newroom.findViewById(R.id.dialog_edittext_roomname);
-                    EditText dialog_edittext_membercount = dialog_newroom.findViewById(R.id.dialog_edittext_membercount);
-                    roomname = dialog_edittext_roomname.getText().toString();
-                    membercount = dialog_edittext_membercount.getText().toString();
-                }
-            }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
 
-                }
-            });
-            return builder.create();
-        }
-    }
 }

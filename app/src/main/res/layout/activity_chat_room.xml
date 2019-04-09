@@ -8,11 +8,14 @@
     android:layout_height="match_parent"
     tools:context=".ChatRoomActivity">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/chatroomactivity_recyclerview"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"
         android:layout_above="@id/chatrooomactivity_linearlayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </ListView>
+        android:layout_height="wrap_content"/>
 
 
     <LinearLayout

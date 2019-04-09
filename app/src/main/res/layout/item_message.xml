@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
+        android:id="@+id/chatroomitem_linearlayout_recivemessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <RelativeLayout
@@ -47,12 +48,41 @@
             android:layout_gravity="bottom"
             android:textSize="13dp"
             android:text="마지막 시간"
-            android:id="@+id/chatroomitem_recive_textview_messagetime"
+            android:id="@+id/chatroomitem_recive_textview_message_lasttime"
             android:layout_width="70dp"
             android:layout_height="wrap_content" />
 
     </LinearLayout>
 
-
+    <LinearLayout
+        android:id="@+id/chatroomitem_linearlayout_sendmessage"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/chatroomtiem_send_textview_message_lasttime"
+            android:textSize="13dp"
+            android:layout_gravity="bottom"
+            android:text="마지막메시지 시간"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <com.github.library.bubbleview.BubbleTextView
+            android:text="1111111111111111111111111111"
+            android:id="@+id/chatroomitem_send_textview_message"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:textColor="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:angle="8dp"
+            app:arrowWidth="8dp"
+            app:arrowHeight="10dp"
+            app:arrowPosition="1dp"
+            app:arrowLocation="right"
+            app:arrowCenter="false"
+            app:bubbleColor="@color/colorBackground"
+            />
+    </LinearLayout>
 
 </RelativeLayout>

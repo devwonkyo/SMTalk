@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.dnjsr.smtalk.globalVariables.SelectedUserInfo;
 import com.example.dnjsr.smtalk.globalVariables.ServerURL;
 import com.example.dnjsr.smtalk.info.UserInfo;
 
@@ -46,9 +47,9 @@ public class ProfileActivity extends AppCompatActivity {
         profileactivity_textview_username = findViewById(R.id.profileactivity_textview_username);
         profileactivity_textview_usermessage =findViewById(R.id.profileactivity_textview_usermessage);
 
-        profileactivity_imageview_profileimage.setImageBitmap(ServerURL.getUserInfo().getProfileImg());
-        profileactivity_textview_username.setText(ServerURL.getUserInfo().getUserName());
-        profileactivity_textview_usermessage.setText(ServerURL.getUserInfo().getComment());
+        profileactivity_imageview_profileimage.setImageBitmap(SelectedUserInfo.getUserInfo().getProfileImg());
+        profileactivity_textview_username.setText(SelectedUserInfo.getUserInfo().getUserName());
+        profileactivity_textview_usermessage.setText(SelectedUserInfo.getUserInfo().getComment());
 
         profileactivity_imageview_profileimage.setOnClickListener(new View.OnClickListener() {               //image눌러 화면이동
             @Override
