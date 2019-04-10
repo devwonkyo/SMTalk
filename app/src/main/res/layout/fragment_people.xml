@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
@@ -13,7 +14,15 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <ImageView
+
+            android:src="@drawable/icon_search"
+            android:layout_weight="1"
+            android:id="@+id/peoplefragment_imageview_search"
+            android:layout_width="0dp"
+            android:layout_height="28dp" />
         <EditText
+            android:layout_marginLeft="10dp"
             android:textSize="15dp"
             android:fontFamily="@font/baeminfont"
             android:defaultFocusHighlightEnabled="false"
@@ -22,23 +31,83 @@
             android:id="@+id/peoplefragment_edittext_search"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
-        <ImageView
-            android:layout_marginLeft="20dp"
-            android:src="@drawable/icon_search"
-            android:layout_weight="1"
-            android:id="@+id/peoplefragment_imageview_search"
-            android:layout_width="0dp"
-            android:layout_height="28dp" />
-
 
     </LinearLayout>
-    <TextView
-        android:fontFamily="@font/baeminfont"
-        android:id="@+id/peoplefragment_textview_friendlist"
-        android:layout_marginLeft="10dp"
-        android:textColor="#bdbdbd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+
+
+    <LinearLayout
+        android:background="@color/colorBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:textColor="@color/colorYellow"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="@font/baeminfont"
+            android:text="내 프로필"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_margin="10dp"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/peoplefragment_imageview_myprofile"/>
+        <TextView
+            android:fontFamily="@font/baeminfont"
+            android:layout_toRightOf="@+id/peoplefragment_imageview_myprofile"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/peoplefragment_textview_myname"
+            android:textSize="15dp"
+            android:text="아이디"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:background="@color/colorBackground"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:layout_width="130dp"
+            android:layout_height="20dp">
+
+            <TextView
+                android:fontFamily="@font/baeminfont"
+                android:textSize="12dp"
+                android:textColor="@color/colorYellow"
+                android:id="@+id/peoplefragment_textview_mycomment"
+                android:text="상태메시지"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:background="@color/colorBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:text="친구"
+            android:fontFamily="@font/baeminfont"
+            android:id="@+id/peoplefragment_textview_friendlist"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/colorYellow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
     <android.support.v7.widget.RecyclerView
         android:layout_marginTop="5dp"
         android:id="@+id/peoplefragment_recyclerview"

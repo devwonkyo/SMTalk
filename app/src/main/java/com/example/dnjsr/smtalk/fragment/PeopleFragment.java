@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.example.dnjsr.smtalk.ProfileActivity;
 import com.example.dnjsr.smtalk.R;
+import com.example.dnjsr.smtalk.globalVariables.CurrentUserInfo;
 import com.example.dnjsr.smtalk.globalVariables.SelectedUserInfo;
 import com.example.dnjsr.smtalk.globalVariables.ServerURL;
 import com.example.dnjsr.smtalk.info.UserInfo;
@@ -38,7 +39,6 @@ public class PeopleFragment extends Fragment {
 
     List<UserInfo> userInfos = new ArrayList<>();
 
-
     public List<UserInfo> getUserInfos() {
         return userInfos;
     }
@@ -51,6 +51,15 @@ public class PeopleFragment extends Fragment {
     private ImageView peoplefragment_imageview_search;
     private TextView peoplefragment_textview_friendlist;
     private PeopleFragmentRecyclerViewAdapter peopleFragmentRecyclerViewAdapter;
+
+    private ImageView peoplefragment_imageview_myprofile;
+    private TextView peoplefragment_textview_myname;
+    private TextView peoplefragment_textview_mycomment;
+
+
+    public void setPeoplefragment_imageview_myprofile(Bitmap myprofile) {
+        this.peoplefragment_imageview_myprofile.setImageBitmap(myprofile);
+    }
 
     public void notifyDataSetChangeed(ArrayList<UserInfo> userInfos){
         peopleFragmentRecyclerViewAdapter.filterList(userInfos);
@@ -68,21 +77,13 @@ public class PeopleFragment extends Fragment {
         peoplefragment_edittext_search = view.findViewById(R.id.peoplefragment_edittext_search);
         peoplefragment_textview_friendlist = view.findViewById(R.id.peoplefragment_textview_friendlist);
 
+        peoplefragment_imageview_myprofile = view.findViewById(R.id.peoplefragment_imageview_myprofile);
+        peoplefragment_textview_myname = view.findViewById(R.id.peoplefragment_textview_myname);
+        peoplefragment_textview_mycomment = view.findViewById(R.id.peoplefragment_textview_mycomment);
 
-       //userInfos = new ArrayList<>();                               //친구목록 data input
-
-        /*userInfos.add(new UserInfo("ww","wonkyo","wonkyo","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","dong","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","gun","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","wkyo","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","hyo","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","ggggyo","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","woleho","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","wttyo","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","이동o","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","w원교yo","","오늘 코딩 ㄴ","hi"));
-        userInfos.add(new UserInfo("ww","wonkyo","wo효근o","","오늘 코딩 ㄴ","hi"));*/
-
+        peoplefragment_imageview_myprofile.setImageBitmap(CurrentUserInfo.getUserInfo().getProfileImg());
+        peoplefragment_textview_myname.setText(CurrentUserInfo.getUserInfo().getUserName());
+        peoplefragment_textview_mycomment.setText(CurrentUserInfo.getUserInfo().getComment());
 
 
         peoplefragment_edittext_search.addTextChangedListener(new TextWatcher() {

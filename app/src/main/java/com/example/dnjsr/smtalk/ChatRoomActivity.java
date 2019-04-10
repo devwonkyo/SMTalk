@@ -38,10 +38,8 @@ public class ChatRoomActivity extends AppCompatActivity {
         RoomInfo roomInfo = bundle.getParcelable("roominfo");
 
         ActionBar actionBar = getSupportActionBar();
-        //actionBar.setTitle(roomInfo.getRoomName());
+        actionBar.setTitle(roomInfo.getRoomName());
 
-        ServerURL serverURL = new ServerURL();
-        //String currentUserId = serverURL.getUserInfo().getUserId();
 
         chatroomactivity_edittext_message = findViewById(R.id.chatroomactivity_edittext_message);
         chatroomactivity_floatingbutton_send = findViewById(R.id.chatroomactivity_floatingbutton_send);

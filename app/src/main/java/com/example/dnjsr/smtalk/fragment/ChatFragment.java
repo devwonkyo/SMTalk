@@ -78,7 +78,7 @@ public class ChatFragment extends android.support.v4.app.Fragment {
             ((CustomViewHolder)viewHolder).chatroomitem_textview_chatroomname.setText(roomAdapterList.get(i).getRoomName());
             ((CustomViewHolder)viewHolder).chatroomitem_textview_chatroomlastmessagetime.setText("1111:11:11");
             ((CustomViewHolder)viewHolder).chatroomitem_textview_chatroomlastmessage.setText(roomAdapterList.get(i).getLastChat());
-            if(!roomAdapterList.get(i).getUnreadCount().equals("")) {
+            if(!roomAdapterList.get(i).getUnreadCount().equals("0")) {
                 ((CustomViewHolder) viewHolder).chatroomitem_textview_unreadcount.setVisibility(View.VISIBLE);
                 ((CustomViewHolder) viewHolder).chatroomitem_textview_unreadcount.setText(roomAdapterList.get(i).getUnreadCount());
             }

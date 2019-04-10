@@ -27,13 +27,11 @@ import com.example.dnjsr.smtalk.fragment.ChatFragment;
 import com.example.dnjsr.smtalk.fragment.PeopleFragment;
 import com.example.dnjsr.smtalk.fragment.SettingFragment;
 import com.example.dnjsr.smtalk.globalVariables.CurrentUserInfo;
-import com.example.dnjsr.smtalk.globalVariables.IsLogin;
 import com.example.dnjsr.smtalk.globalVariables.ServerURL;
 import com.example.dnjsr.smtalk.info.RoomInfo;
 import com.example.dnjsr.smtalk.info.UserInfo;
 import com.example.dnjsr.smtalk.result.FriendListCallResult;
 import com.example.dnjsr.smtalk.result.RoomListCallResult;
-import com.example.dnjsr.smtalk.update.RoomsListCall;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        loadingThread();
     }
 
     @Override
@@ -118,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
         userInfos = new ArrayList<>();
         roomInfos = new ArrayList<>();
 
-
         handler = new Handler(){
 
             @Override
@@ -127,96 +125,14 @@ public class MainActivity extends AppCompatActivity {
                 if(msg.what == 0) {
                     peopleFragment.notifyDataSetChangeed((ArrayList<UserInfo>) userInfos);
                     peopleFragment.setUserInfos(userInfos);
-                    Log.d("test123","핸들러받고 다시 초기화");
+                    peopleFragment.setPeoplefragment_imageview_myprofile(CurrentUserInfo.getUserInfo().getProfileImg());   //내 프로필 이미지
                 }
                 if(msg.what ==1){
                     Log.d("test123","핸들러2 받고 다시초기화");
-                    //chatFragment.notifyDataSetChangeed((ArrayList<RoomInfo>) roomInfos);
                     chatFragment.setRoomAdapterList(roomInfos);
                 }
             }
         };
-
-
-
-
-      /*  Bundle bundle = getIntent().getExtras();
-        final UserInfo userinfo = bundle.getParcelable("userinfo");*/
-
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    Log.d("test123","쓰레드1 시작");
-                    HashMap<String, String> input = new HashMap<>();
-                    input.put("_id", CurrentUserInfo.getUserInfo().get_id());
-
-                    Retrofit retrofit = new Retrofit.Builder().baseUrl(currentServer)
-                            .addConverterFactory(GsonConverterFactory.create()).build();
-                    RetrofitApi friendListCallApi = retrofit.create(RetrofitApi.class);
-                    friendListCallApi.postUserInfoForFriendList(input).enqueue(new Callback<FriendListCallResult>() {
-                        @Override
-                        public void onResponse(Call<FriendListCallResult> call, Response<FriendListCallResult> response) {
-                            if (response.isSuccessful()) {
-                                final FriendListCallResult map = response.body();
-                                if (map != null) {
-                                    switch (map.getResult()) {
-                                        case -1:
-                                            Toast.makeText(MainActivity.this, "데이터 베이스 오류입니다.", Toast.LENGTH_SHORT).show();
-                                            break;
-                                        case 0:
-                                            Toast.makeText(MainActivity.this, "등록된 친구가 없습니다.", Toast.LENGTH_SHORT).show();
-                                            break;
-                                        case 1:
-                                            Thread thread_inner = new Thread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    Log.d("test123","쓰레드2 시작");
-                                                    for (UserInfo userInfo : map.getFriendsList()) {
-                                                        URL url = null;
-                                                        try {
-                                                            url = new URL(currentServer + userInfo.getProfileImgUrl());
-                                                        } catch (MalformedURLException e) {
-                                                            e.printStackTrace();
-                                                        }
-
-                                                        InputStream inputStream = null;
-                                                        try {
-                                                            inputStream = url.openStream();
-                                                        } catch (IOException e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                        final Bitmap bm = BitmapFactory.decodeStream(inputStream);
-                                                        userInfo.setProfileImg(bm);
-                                                        userInfos.add(userInfo);
-                                                    }
-                                                    Log.d("test123","userInfos 완료");
-                                                    handler.sendEmptyMessage(0);
-                                                    Log.d("test123","핸들러메시지보냄");
-                                                }
-                                            });
-                                            thread_inner.start();
-                                            Toast.makeText(MainActivity.this,"소캣톡 환영합니다!", Toast.LENGTH_SHORT).show();
-                                            break;
-                                    }
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<FriendListCallResult> call, Throwable t) {
-
-                        }
-
-                    });
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
-        thread.start();
 
 
 
@@ -231,20 +147,9 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.parseColor("#2f2f30"));
         }
 
-        /*roomInfos.add(new RoomInfo("이동영","ㅎㅎ","1"));
-        roomInfos.add(new RoomInfo("정원교","ㅋㅋㅋㅋㅋㅋ","1"));
-        roomInfos.add(new RoomInfo("방효근","???????","1"));
-        roomInfos.add(new RoomInfo("이동영","ㅎㅎ","1"));
-        chatFragment.setRoomAdapterList(roomInfos);
-*/
-
-
-        /*Intent intent = getIntent();
-        UserInfo userInfo = intent.getParcelableExtra("userinfo");*/
 
 
         getSupportFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout,peopleFragment).commit();  //people fragment로 초기화
-        Log.d("test123","프래그먼트 화면 초기화");
 
         BottomNavigationView mainactivity_bottomnavigationview = findViewById(R.id.mainactivity_bottomnavigationview);
 
@@ -257,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                         actionBar.setTitle("친구");
                         item_newfriend.setVisible(true);
                         item_newroom.setVisible(false);
+                        peopleFragment.setPeoplefragment_imageview_myprofile(CurrentUserInfo.getUserInfo().getProfileImg());
                         getSupportFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout,peopleFragment).commit();
                         return true;
                     case R.id.action_chat:
@@ -323,6 +229,98 @@ public class MainActivity extends AppCompatActivity {
             }catch (Exception e){
                 e.printStackTrace();
             }
+        }
+
+        public void loadingThread(){
+            userInfos.clear();
+
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        HashMap<String, String> input = new HashMap<>();
+                        input.put("_id", CurrentUserInfo.getUserInfo().get_id());
+
+//                        ---------------------------------------------------------------------------------------------------------------------  내 프로필 사진변경
+                        URL myProfileUrl = null;
+                        try {
+                            myProfileUrl = new URL(ServerURL.getUrl() + CurrentUserInfo.getUserInfo().getProfileImgUrl());
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                        InputStream myProfileInputStream = null;
+
+                        try {
+                            myProfileInputStream = myProfileUrl.openStream();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        final Bitmap myProfileBitmap = BitmapFactory.decodeStream(myProfileInputStream);
+                        CurrentUserInfo.getUserInfo().setProfileImg(myProfileBitmap);
+//                        ---------------------------------------------------------------------------------------------------------------------
+
+
+                        Retrofit retrofit = new Retrofit.Builder().baseUrl(ServerURL.getUrl())
+                                .addConverterFactory(GsonConverterFactory.create()).build();
+                        RetrofitApi friendListCallApi = retrofit.create(RetrofitApi.class);
+                        friendListCallApi.postUserInfoForFriendList(input).enqueue(new Callback<FriendListCallResult>() {
+                            @Override
+                            public void onResponse(Call<FriendListCallResult> call, Response<FriendListCallResult> response) {
+                                if (response.isSuccessful()) {
+                                    final FriendListCallResult map = response.body();
+                                    if (map != null) {
+                                        switch (map.getResult()) {
+                                            case -1:
+                                                Toast.makeText(MainActivity.this, "데이터 베이스 오류입니다.", Toast.LENGTH_SHORT).show();
+                                                break;
+                                            case 0:
+                                                handler.sendEmptyMessage(0);                                                                   //친구가 없을 때에도 프로필 변경해야함.
+                                                Toast.makeText(MainActivity.this, "등록된 친구가 없습니다.", Toast.LENGTH_SHORT).show();
+                                                break;
+                                            case 1:
+                                                Thread thread_inner = new Thread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        for (UserInfo userInfo : map.getFriendsList()) {
+                                                            URL url = null;
+                                                            try {
+                                                                url = new URL(ServerURL.getUrl() + userInfo.getProfileImgUrl());
+                                                            } catch (MalformedURLException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                            InputStream inputStream = null;
+                                                            try {
+                                                                inputStream = url.openStream();
+                                                            } catch (IOException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                            final Bitmap bm = BitmapFactory.decodeStream(inputStream);
+                                                            userInfo.setProfileImg(bm);
+                                                            userInfos.add(userInfo);
+                                                        }
+                                                        handler.sendEmptyMessage(0);
+                                                    }
+                                                });
+                                                thread_inner.start();
+                                                break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<FriendListCallResult> call, Throwable t) {
+
+                            }
+
+                        });
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+            thread.start();
         }
 
 
