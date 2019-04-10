@@ -297,6 +297,7 @@ public class MainActivity extends AppCompatActivity {
                                                             final Bitmap bm = BitmapFactory.decodeStream(inputStream);
                                                             userInfo.setProfileImg(bm);
                                                             userInfos.add(userInfo);
+                                                            Log.d("testfriend",userInfo.get_id()+"  "+userInfo.getUserName());
                                                         }
                                                         handler.sendEmptyMessage(0);
                                                     }

@@ -45,21 +45,6 @@ public class UserInfoUpdate {
                                 case 1:
                                     Log.d("12321", "update ok");
                                     UserInfo userinfo = map.getUserInfo();
-                                    /*URL myProfileUrl = null;
-                                    try {
-                                        myProfileUrl = new URL(ServerURL.getUrl() + CurrentUserInfo.getUserInfo().getProfileImgUrl());
-                                    } catch (MalformedURLException e) {
-                                        e.printStackTrace();
-                                    }
-                                    InputStream myProfileInputStream = null;
-
-                                    try {
-                                         myProfileInputStream = myProfileUrl.openStream();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    final Bitmap myProfileBitmap = BitmapFactory.decodeStream(myProfileInputStream);
-                                    userinfo.setProfileImg(myProfileBitmap);*/
                                     CurrentUserInfo.setUserInfo(userinfo);
                                     activity.finish();
                                     break;

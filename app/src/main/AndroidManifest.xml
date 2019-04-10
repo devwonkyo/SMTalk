@@ -38,7 +38,9 @@
             android:name=".ProfilepictureActivity"
             android:theme="@style/AppThemeNoActionBar" />
         <activity android:name=".ChatRoomActivity" />
-        <activity android:name=".SearchActivity"></activity>
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".MyProfileActivity"
+            android:theme="@style/AppThemeNoActionBar"></activity>
     </application>
 
 </manifest>

@@ -18,8 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.dnjsr.smtalk.MyProfileActivity;
 import com.example.dnjsr.smtalk.ProfileActivity;
 import com.example.dnjsr.smtalk.R;
 import com.example.dnjsr.smtalk.globalVariables.CurrentUserInfo;
@@ -51,6 +53,7 @@ public class PeopleFragment extends Fragment {
     private ImageView peoplefragment_imageview_search;
     private TextView peoplefragment_textview_friendlist;
     private PeopleFragmentRecyclerViewAdapter peopleFragmentRecyclerViewAdapter;
+    private RelativeLayout peopleFragment_relativelayout;
 
     private ImageView peoplefragment_imageview_myprofile;
     private TextView peoplefragment_textview_myname;
@@ -73,6 +76,7 @@ public class PeopleFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_people,container,false);
+        peopleFragment_relativelayout = view.findViewById(R.id.peoplefragment_relativelayout);
         peoplefragment_imageview_search = view.findViewById(R.id.peoplefragment_imageview_search);
         peoplefragment_edittext_search = view.findViewById(R.id.peoplefragment_edittext_search);
         peoplefragment_textview_friendlist = view.findViewById(R.id.peoplefragment_textview_friendlist);
@@ -84,6 +88,15 @@ public class PeopleFragment extends Fragment {
         peoplefragment_imageview_myprofile.setImageBitmap(CurrentUserInfo.getUserInfo().getProfileImg());
         peoplefragment_textview_myname.setText(CurrentUserInfo.getUserInfo().getUserName());
         peoplefragment_textview_mycomment.setText(CurrentUserInfo.getUserInfo().getComment());
+
+
+        peopleFragment_relativelayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SelectedUserInfo.setUserInfo(CurrentUserInfo.getUserInfo());
+                startActivity(new Intent(v.getContext(),MyProfileActivity.class));
+            }
+        });
 
 
         peoplefragment_edittext_search.addTextChangedListener(new TextWatcher() {
@@ -158,14 +171,8 @@ public class PeopleFragment extends Fragment {
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     SelectedUserInfo.setUserInfo(adapterList.get(i));
-//                    UserInfo selectedUserInfo = new UserInfo(adapterList.get(i).getUserName(),adapterList.get(i).getComment());
                     Intent intent = new Intent(v.getContext(),ProfileActivity.class);
-                    /*intent.putExtra("selectedinfo",selectedUserInfo);
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    adapterList.get(i).getProfileImg().compress(Bitmap.CompressFormat.PNG,50,byteArrayOutputStream);
-                    intent.putExtra("byteArray",byteArrayOutputStream.toByteArray());*/
                     startActivity(intent);
                 }
             });

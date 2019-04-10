@@ -42,6 +42,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     Bitmap reciveImage;
     Boolean isFriend = false;
+    Boolean isCurrentUser =false;
     UserInfo userInfo;
     UserInfoUpdate userInfoUpdate = new UserInfoUpdate();
 
@@ -57,6 +58,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         userInfo = SelectedUserInfo.getUserInfo();
+        Log.d("testfriend",userInfo.get_id()+"  "+userInfo.getUserName()+"선택");
 
         profileactivity_imageview_profileimage = findViewById(R.id.profileactivity_imageview_profileimage);
         profileactivity_textview_username = findViewById(R.id.profileactivity_textview_username);
@@ -70,6 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
         profileactivity_textview_usermessage.setText(userInfo.getComment());
 
 //--------------------------------------------------------------------------------------------------------------------------------------- 친구여부에 따른 추가 삭제 ui변경
+
         for (int i = 0; i<CurrentUserInfo.getUserInfo().getFriendsList().size(); i++){
             if(CurrentUserInfo.getUserInfo().getFriendsList().get(i).get_id().equals(userInfo.get_id())){
                 isFriend=true;
@@ -80,7 +83,8 @@ public class ProfileActivity extends AppCompatActivity {
         if(isFriend){
             profileactivity_imageview_friend.setImageResource(R.drawable.icon_user_delete);
             profileactivity_textview_friend.setText("친구 삭제");
-        }else{
+        }
+        else{
             profileactivity_imageview_friend.setImageResource(R.drawable.icon_user_plus);
             profileactivity_textview_friend.setText("친구 추가");
         }
@@ -102,11 +106,14 @@ public class ProfileActivity extends AppCompatActivity {
                 String myId = CurrentUserInfo.getUserInfo().get_id();
                 String friendId = userInfo.get_id();
                 if(isFriend){
-                        deleteFriend(myId,friendId);
+                    deleteFriend(myId,friendId);
+                    userInfoUpdate.Update(CurrentUserInfo.getUserInfo().get_id(),ProfileActivity.this);
                 }else{
-                        addFriend(myId,friendId);
+                    addFriend(myId,friendId);
+                    userInfoUpdate.Update(CurrentUserInfo.getUserInfo().get_id(),ProfileActivity.this);
+                    sendBroadcast(new Intent("finish_activity"));                                      //search activity 종료 신호보내기, -->mainactivity로 이동
                 }
-                userInfoUpdate.Update(CurrentUserInfo.getUserInfo().get_id(),ProfileActivity.this);
+
             }
         });
 
@@ -122,6 +129,7 @@ public class ProfileActivity extends AppCompatActivity {
         HashMap<String, String> input = new HashMap<>();
         input.put("_id", myId);
         input.put("friendId",friendId);
+        Log.d("testfriend",friendId+"  "+userInfo.getUserName()+"추가");
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(ServerURL.getUrl())
                 .addConverterFactory(GsonConverterFactory.create()).build();
@@ -154,6 +162,7 @@ public class ProfileActivity extends AppCompatActivity {
         HashMap<String, String> input = new HashMap<>();
         input.put("_id", myId);
         input.put("friendId",friendId);
+        Log.d("testfriend",friendId+"  "+userInfo.getUserName()+"삭제");
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(ServerURL.getUrl())
                 .addConverterFactory(GsonConverterFactory.create()).build();
